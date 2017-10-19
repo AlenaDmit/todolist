@@ -1,0 +1,152 @@
+body {
+    background: grey;
+}
+
+.container {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    width: 500px;
+    min-height: 400px;
+    margin: 0;
+    padding: 0;
+    background: white;
+    border-radius: 10px;
+}
+
+.form-name {
+    width: 100%;
+    line-height: 30px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    background: #F5F5F5;
+    border-radius: 10px 10px 0 0;
+    border-bottom: 1px solid #dfdfe1;
+    text-align: center;
+    color: black;
+    padding: 5px 0;
+}
+
+.form {
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.form__input {
+    width: 250px;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #dfdfe1;
+    margin: 0 30px 0 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.form__data {
+    width: 120px;
+    font-family: 'Roboto', sans-serif;
+    margin: 0 30px 0 0;
+    outline: none;
+    border: none;
+    color: #757575;
+    border-bottom: 1px solid #dfdfe1;
+}
+
+.form__data--choosed::-webkit-datetime-edit {
+    color: black;
+}
+
+.form__link-btn {
+
+}
+
+.form__link-btn__img-btn-add {
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+    vertical-align: bottom;
+    transition: all .3s;
+}
+
+.filters {
+    padding: 0;
+    margin: 0 0 10px 0;
+    text-align: center;
+}
+
+.filters__text, .filters__day, .filters__month, .filters__week {
+    margin: 0 20px 0 0;
+    padding: 0;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.filters__text {
+    cursor: auto;
+}
+
+.tasks-list {
+    width: 100%;
+    padding: 20px 40px;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.tasks-list__item {
+    width: 100%;
+    line-height: 25px;
+    padding: 10px 5px;
+    margin: 0 0 5px 0;
+    list-style: none;
+    box-sizing: border-box;
+    transition: all .3s;
+    display: inline-block;
+}
+
+.tasks-list__item:hover {
+    box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.tasks-list__item__name {
+    margin: 0 50px 0 5px;
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.tasks-list__item__name:before {
+    content: '';
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin: 0 10px 0 0;
+    background: url(icons/empty.png) no-repeat;
+    background-size: cover;
+    vertical-align: middle;
+}
+
+.tasks-list__item__checkbox:checked + .tasks-list__item__name:before{
+    content: '';
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin: 0 10px 0 0;
+    background: url(icons/checked.png) no-repeat;
+    background-size: cover;
+    vertical-align: middle;
+}
+
+.tasks-list__item__deadline {
+    margin: 0 10px 0 0;
+}
+
+.tasks-list__item__link-btn {
+    float: right;
+}
+
+.tasks-list__item__link-btn__img-btn-delete {
+    height: 25px;
+    width: 25px;
+    vertical-align: bottom;
+    transition: all .3s;
+    cursor: pointer;
+}
