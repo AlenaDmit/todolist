@@ -1,37 +1,84 @@
+const renderToElement = (element, dist) => {
+
+};
+
 (function getToDoList() {
-    function createElem(tagName, cssClass) {
-        let newElem = document.createElement(tagName);
-        newElem.setAttribute('class', cssClass);
-        return newElem;
-    }
+    // function createElem(tagName, cssClass) {
+    //     let newElem = document.createElement(tagName);
+    //     newElem.setAttribute('class', cssClass);
+    //     return newElem;
+    // }
 
-    function createElemImg(src, cssClass) {
-        let newImg = document.createElement('img');
-        newImg.setAttribute('src', src);
-        newImg.setAttribute('class', cssClass);
-        return newImg;
-    }
+    const makeElement = (type='div', attributes={}, content='', filter='') => {
+        let element = document.createElement(type);
+        element.innerHTML = content;
+            for (key in attributes) {
+                element.setAttribute(key, attributes[key])
+            }
+        return element;
+    };
 
-    let container = createElem('div', 'container');
-    let nameOfForm = createElem('div', 'form-name');
-    nameOfForm.innerHTML = 'TO DO LIST';
-    let form = createElem('form', 'form');
-    let formInput = createElem('input', 'form__input');
-    formInput.setAttribute('placeholder','Введите название...');
-    let btnAdd = createElem('a', 'form__link-btn');
-    let imgAdd = createElemImg('icons/add-black.svg', 'form__link-btn__img-btn-add');
-    let dataPicker = createElem('input', 'form__data');
-    dataPicker.setAttribute('type', 'date');
-    let filters = createElem('ul','filters');
-    let filtersText = createElem('li', 'filters__text');
-    filtersText.innerHTML = 'Задачи на:';
-    let filterDay = createElem('li', 'filters__day');
-    filterDay.innerHTML = 'день';
-    let filterWeek = createElem('li', 'filters__week');
-    filterWeek.innerHTML = 'неделю';
-    let filterMonth = createElem('li', 'filters__month');
-    filterMonth.innerHTML = 'месяц';
-    let tasksList = createElem('ul', 'tasks-list');
+    let fragment = document.createDocumentFragment();
+
+    let container = makeElement('div', {
+        class: 'container',
+    });
+
+    let nameOfForm = makeElement('div', {
+        class: 'form-name',
+    }, 'TODO LIST');
+
+    let form = makeElement('form', {
+        class: "form",
+        action: '#',
+    });
+
+    let formInput = makeElement('input', {
+        type: 'text',
+        class: 'form__input',
+        required: true,
+        placeholder: "Введите название...",
+    });
+
+    let btnAdd = makeElement('button', {
+        class: 'form__link-btn',
+        type: 'submit',
+    });
+
+    let imgAdd = makeElement('img', {
+        class: 'form__link-btn__img-btn-add',
+        src: 'icons/add-black.svg',
+    });
+
+    let dataPicker = makeElement('input', {
+        class: 'form__data',
+        type: 'date',
+        required: true,
+    });
+
+    let filters = makeElement('ul', {
+        class: 'filters',
+    });
+
+    let filtersText = makeElement('li', {
+        class: 'filters__text',
+    }, 'Задачи на:');
+
+    let filterDay = makeElement('li', {
+        class: 'filters__day',
+    }, 'день');
+
+    let filterWeek = makeElement('li', {
+        class: 'filters__week',
+    }, 'неделю');
+
+    let filterMonth = makeElement('li', {
+        class: 'filters__month',
+    }, 'месяц');
+
+    let tasksList = makeElement('ul', {
+        class: 'tasks-list',
+    });
 
     dataPicker.onchange = function () {
         if (dataPicker.value !== '') {
@@ -40,7 +87,7 @@
             dataPicker.classList.remove('form__data--choosed');
         }
     };
-    
+
     form.appendChild(formInput);
     form.appendChild(dataPicker);
     btnAdd.appendChild(imgAdd);
@@ -53,7 +100,8 @@
     container.appendChild(form);
     container.appendChild(filters);
     container.appendChild(tasksList);
-    document.body.appendChild(container);
+    fragment.appendChild(container);
+    document.body.appendChild(fragment);
 
     imgAdd.onmouseover = function () {
         imgAdd.setAttribute('src','icons/add-green.svg');
@@ -63,25 +111,47 @@
         imgAdd.setAttribute('src', 'icons/add-black.svg');
     };
 
-    let arrDatas = [];
+    let todoList = [];
 
-    btnAdd.addEventListener('click', function (e) {
+    form.addEventListener('submit', function (e) {
         e.preventDefault();
         if (formInput.value.length !== 0 && dataPicker.value.length !== 0) {
-            let valueOfInput = formInput.value;
-            let valueOfData = dataPicker.value;
-            let taskItem = createElem('li', 'tasks-list__item');
-            let taskCheckbox = createElem('input', 'tasks-list__item__checkbox');
-            taskCheckbox.setAttribute('type', 'checkbox');
-            taskCheckbox.setAttribute('hidden', 'true');
-            taskCheckbox.setAttribute('id', 'checkbox');
-            let taskName = createElem('label', 'tasks-list__item__name');
-            taskName.setAttribute('for', 'checkbox');
-            taskName.innerHTML = valueOfInput;
-            let taskDeadline = createElem('span', 'tasks-list__item__deadline');
-            taskDeadline.innerHTML = valueOfData;
-            let btnDeleteTask = createElem('a', 'tasks-list__item__link-btn');
-            let imgDeleteTask = createElemImg('icons/delete-black.svg', 'tasks-list__item__link-btn__img-btn-delete');
+            const todoItem = {
+                name: formInput.value,
+                deadline: dataPicker.value,
+                done: false,
+            };
+
+            todoList.push(todoItem);
+
+            let taskItem = makeElement('li', {
+                class: 'tasks-list__item',
+            });
+
+            let taskCheckbox = makeElement('input', {
+                class: 'tasks-list__item__checkbox',
+                type: 'checkbox',
+                hidden: 'true',
+                id: 'checkbox',
+            });
+
+            let taskName = makeElement('label', {
+                class: 'tasks-list__item__name',
+                for: 'checkbox',
+            }, todoItem.name);
+
+            let taskDeadline = makeElement('span', {
+                class: 'tasks-list__item__deadline',
+            }, todoItem.deadline);
+
+            let btnDeleteTask = makeElement('a', {
+                class: 'tasks-list__item__link-btn',
+            });
+
+            let imgDeleteTask = makeElement('img', {
+                src: 'icons/delete-black.svg',
+                class: 'tasks-list__item__link-btn__img-btn-delete',
+            });
 
             taskItem.appendChild(taskCheckbox);
             taskItem.appendChild(taskName);
@@ -106,16 +176,12 @@
                 tasksList.removeChild(target);
             });
 
-
-            arrDatas.push(valueOfData);
-
-            filterDay.addEventListener('click', function (e) {
-                for (let i = 0; i < valueOfData.length; i++) {
-                    console.log(typeof valueOfData[i]);
-                }
-            })
+            // filterDay.addEventListener('click', function (e) {
+            //     for (let i = 0; i < valueOfData.length; i++) {
+            //         console.log(typeof valueOfData[i]);
+            //     }
+            // })
         }
 
     })
-
 })();
