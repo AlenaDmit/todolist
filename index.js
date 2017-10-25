@@ -3,12 +3,6 @@ const renderToElement = (element, dist) => {
 };
 
 (function getToDoList() {
-    // function createElem(tagName, cssClass) {
-    //     let newElem = document.createElement(tagName);
-    //     newElem.setAttribute('class', cssClass);
-    //     return newElem;
-    // }
-
     const makeElement = (type='div', attributes={}, content='', filter='') => {
         let element = document.createElement(type);
         element.innerHTML = content;
@@ -51,7 +45,7 @@ const renderToElement = (element, dist) => {
     });
 
     let dataPicker = makeElement('input', {
-        class: 'form__data',
+        class: 'form__date',
         type: 'date',
         required: true,
     });
@@ -62,7 +56,7 @@ const renderToElement = (element, dist) => {
 
     let filtersText = makeElement('li', {
         class: 'filters__text',
-    }, 'Задачи на:');
+    }, 'Фильтр:');
 
     let filterDay = makeElement('li', {
         class: 'filters__day',
@@ -70,7 +64,7 @@ const renderToElement = (element, dist) => {
 
     let filterWeek = makeElement('li', {
         class: 'filters__week',
-    }, 'неделю');
+    }, 'неделя');
 
     let filterMonth = makeElement('li', {
         class: 'filters__month',
@@ -124,6 +118,8 @@ const renderToElement = (element, dist) => {
 
             todoList.push(todoItem);
 
+            let fragmentListOfTasks = document.createDocumentFragment();
+
             let taskItem = makeElement('li', {
                 class: 'tasks-list__item',
             });
@@ -158,7 +154,8 @@ const renderToElement = (element, dist) => {
             taskItem.appendChild(taskDeadline);
             btnDeleteTask.appendChild(imgDeleteTask);
             taskItem.appendChild(btnDeleteTask);
-            tasksList.appendChild(taskItem);
+            fragmentListOfTasks.appendChild(taskItem);
+            tasksList.appendChild(fragmentListOfTasks);
 
             imgDeleteTask.onmouseover = function(e) {
                 e.stopPropagation();
@@ -175,6 +172,9 @@ const renderToElement = (element, dist) => {
                 let target = e.target.parentNode.parentNode;
                 tasksList.removeChild(target);
             });
+
+            formInput.value = '';
+            dataPicker.value = '';
 
             // filterDay.addEventListener('click', function (e) {
             //     for (let i = 0; i < valueOfData.length; i++) {
