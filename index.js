@@ -3,6 +3,8 @@ const renderToElement = (element, dist) => {
 };
 
 (function getToDoList() {
+    window.lastId = 0;
+
     const makeElement = (type='div', attributes={}, content='', filter='') => {
         let element = document.createElement(type);
         element.innerHTML = content;
@@ -107,16 +109,33 @@ const renderToElement = (element, dist) => {
 
     let todoList = [];
 
+    // ********************* filters ***********************
+
+    let getCurrentDay = function() {
+        let currDay = new Date();
+        return currDay.getDate();
+    };
+    let currentDay = getCurrentDay();
+
+    let week = function getWeek() {
+
+    };
+
+    filterDay.addEventListener('click', function () {
+        filterDay.classList.toggle('filters--active');
+        for (let i = 0; i < todoList.length; i++) {
+            console.log(todoList);
+            if (todoList[i].deadline.split('-')[2] != currentDay) {
+                tasksList.removeChild(todoList[i].domEl);
+            }
+        }
+    });
+
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         if (formInput.value.length !== 0 && dataPicker.value.length !== 0) {
-            const todoItem = {
-                name: formInput.value,
-                deadline: dataPicker.value,
-                done: false,
-            };
 
-            todoList.push(todoItem);
+            let id = getId();
 
             let fragmentListOfTasks = document.createDocumentFragment();
 
@@ -128,17 +147,17 @@ const renderToElement = (element, dist) => {
                 class: 'tasks-list__item__checkbox',
                 type: 'checkbox',
                 hidden: 'true',
-                id: 'checkbox',
+                id: 'checkbox' + id,
             });
 
             let taskName = makeElement('label', {
                 class: 'tasks-list__item__name',
-                for: 'checkbox',
-            }, todoItem.name);
+                for: 'checkbox' + id,
+            }, formInput.value);
 
             let taskDeadline = makeElement('span', {
                 class: 'tasks-list__item__deadline',
-            }, todoItem.deadline);
+            }, dataPicker.value);
 
             let btnDeleteTask = makeElement('a', {
                 class: 'tasks-list__item__link-btn',
@@ -173,15 +192,21 @@ const renderToElement = (element, dist) => {
                 tasksList.removeChild(target);
             });
 
-            formInput.value = '';
-            dataPicker.value = '';
+            const todoItem = {
+                name: formInput.value,
+                deadline: dataPicker.value,
+                domEl:taskItem,
+                done: false,
+            };
 
-            // filterDay.addEventListener('click', function (e) {
-            //     for (let i = 0; i < valueOfData.length; i++) {
-            //         console.log(typeof valueOfData[i]);
-            //     }
-            // })
+            todoList.push(todoItem);
+
+            formInput.value = '';
         }
 
-    })
+    });
+
+    let getId = function () {
+        return ++window.lastId;
+    }
 })();

@@ -84,8 +84,19 @@ body {
     color: dimgrey;
 }
 
+.filters--active {
+    color: black;
+    font-weight: bold;
+}
+
+.filters__day:hover, .filters__month:hover, .filters__week:hover {
+    border-bottom: 1px solid black;
+    color: black;
+}
+
 .filters__text {
     cursor: auto;
+    border: 1px solid transparent;
 }
 
 .tasks-list {
