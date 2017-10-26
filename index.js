@@ -122,11 +122,19 @@ const renderToElement = (element, dist) => {
     };
 
     filterDay.addEventListener('click', function () {
-        filterDay.classList.toggle('filters--active');
-        for (let i = 0; i < todoList.length; i++) {
-            console.log(todoList);
-            if (todoList[i].deadline.split('-')[2] != currentDay) {
-                tasksList.removeChild(todoList[i].domEl);
+        if (formInput.value.length !== 0 && dataPicker.value.length !== 0) {
+            let result = filterDay.classList.toggle('filters--active');
+            if (result) {
+                for (let i = 0; i < todoList.length; i++) {
+                    console.log(todoList);
+                    if (todoList[i].deadline.split('-')[2] != currentDay) {
+                        tasksList.removeChild(todoList[i].domEl);
+                    }
+                }
+            } else {
+                for (let i = 0; i < todoList.length; i++) {
+                    tasksList.appendChild(todoList[i].domEl);
+                }
             }
         }
     });
@@ -195,7 +203,7 @@ const renderToElement = (element, dist) => {
             const todoItem = {
                 name: formInput.value,
                 deadline: dataPicker.value,
-                domEl:taskItem,
+                domEl: taskItem,
                 done: false,
             };
 
