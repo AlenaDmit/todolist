@@ -117,16 +117,11 @@ const renderToElement = (element, dist) => {
     };
     let currentDay = getCurrentDay();
 
-    let week = function getWeek() {
-
-    };
-
-    filterDay.addEventListener('click', function () {
-        if (formInput.value.length !== 0 && dataPicker.value.length !== 0) {
+    filterDay.addEventListener('click', function() {
+        if (todoList.length !== 0) {
             let result = filterDay.classList.toggle('filters--active');
             if (result) {
                 for (let i = 0; i < todoList.length; i++) {
-                    console.log(todoList);
                     if (todoList[i].deadline.split('-')[2] != currentDay) {
                         tasksList.removeChild(todoList[i].domEl);
                     }
@@ -137,6 +132,38 @@ const renderToElement = (element, dist) => {
                 }
             }
         }
+    });
+
+    filterWeek.addEventListener('click', function() {
+        function getMonday(date) {
+            let day = date.getDay() || 7;
+            if (day !== 1)
+                date.setHours(-24 * (day - 1));
+            return date;
+        }
+
+        function getSunday(date) {
+            let day = date.getDay() || 1;
+            if (day !== 7)
+                date.setHours(24 * (day - 1));
+            return date;
+        }
+
+       if (todoList.length !== 0) {
+           let result = filterWeek.classList.toggle('filters--active');
+           if (result) {
+               for (let i = 0; i < todoList.length; i++) {
+                   console.log(getMonday(new Date()) >= new Date(todoList[i].deadline) && getSunday(new Date()) <= new Date(todoList[i].deadline));
+                   if (getMonday(new Date()) >= new Date(todoList[i].deadline) && getSunday(new Date()) <= new Date(todoList[i].deadline)) {
+                       tasksList.removeChild(todoList[i].domEl);
+                   }
+               }
+           } else {
+               for (let i = 0; i < todoList.length; i++) {
+                   tasksList.appendChild(todoList[i].domEl);
+               }
+           }
+       }
     });
 
     form.addEventListener('submit', function (e) {
