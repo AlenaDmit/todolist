@@ -1,9 +1,49 @@
 const renderToElement = (element, dist) => {
 
 };
+const initialTodoList =  [
+    {name: "erfrewrf", deadline: "2017-11-08", done: false},
+    {name: "erfrewrf", deadline: "2017-11-08", done: false},
+    {name: "33333333333333", deadline: "2017-11-02",  done: false},
+    {name: "hgdx", deadline: "2017-11-07", done: false},];
+
+
+/*
+interface todoListItem {
+        name: string,
+        deadline: string/date,
+        done: bool,
+        domEl: ?DOMElement,
+}*/
 
 (function getToDoList() {
     window.lastId = 0;
+
+    const getMonday = (date) => {
+        const day =  date.getDay() || 7;
+        return day !== 1
+            ? new Date((new Date(date)).setHours(-24 * (day - 1)))
+            : new Date(date);
+    };
+
+    const getSunday = (date) => {
+        const day = date.getDay() || 1;
+        return day !== 7
+            ? new Date((new Date(date)).setHours(24 * (7 - day)))
+            : new Date(date);
+    };
+
+    const getFirstDayOfMonth = (date) => {
+        const y = date.getFullYear();
+        const m = date.getMonth();
+        return new Date(y, m, 1);
+    };
+
+    const getLastDayOfMonth = (date) => {
+        const y = date.getFullYear();
+        const m = date.getMonth();
+        return new Date(y, m + 1, 0);
+    };
 
     const makeElement = (type='div', attributes={}, content='', filter='') => {
         let element = document.createElement(type);
@@ -108,21 +148,50 @@ const renderToElement = (element, dist) => {
     };
 
     let todoList = [];
+       /* initialTodoList.map((it) => ({
+            ...it,
+            domEl: makeTodoItemt(it),
+        }));
+    const res = document.createDocumentFragment();
+    todoList.forEach(el => res.appendChild(el.domEl));
+    tasksList.appendChild(res); */
 
     // ********************* filters ***********************
 
-    let getCurrentDay = function() {
-        let currDay = new Date();
-        return currDay.getDate();
+    const dayFilter = (filter, todoList, DOMElement) => () => {
+        filter(todoList, DOMElement);
     };
-    let currentDay = getCurrentDay();
+    filterDay.addEventListener('click', dayFilter(boundaryFilter, todoList, filterDay));
 
-    filterDay.addEventListener('click', function() {
+    const weekFilter = (filter, todoList, DOMElement, getMonday, getSunday) => {
+        return function(e) {
+            const now = new Date();
+            filter(todoList, DOMElement, getMonday(now), getSunday(now));
+        };
+    };
+    filterWeek.addEventListener('click', weekFilter(boundaryFilter, todoList, filterWeek, getMonday, getSunday));
+
+    const monthFilter = (filter, todoList, DOMElement, getFirstDayOfMonth, getLastDayOfMonth) => {
+        return function(e) {
+            const now = new Date();
+            filter(todoList, DOMElement, getFirstDayOfMonth(now), getLastDayOfMonth(now));
+        };
+    };
+    filterMonth.addEventListener('click', monthFilter(boundaryFilter, todoList, filterMonth, getFirstDayOfMonth, getLastDayOfMonth));
+
+    function boundaryFilter(todoList, DOMElement, _start = new Date(), _end = new Date()) {
+        const start = new Date(_start);
+        start.setHours(0,0,0,0);
+        const end = new Date(_end);
+        end.setHours(23,59,59,59);
+
         if (todoList.length !== 0) {
-            let result = filterDay.classList.toggle('filters--active');
+            let result = DOMElement.classList.toggle('filters--active');
             if (result) {
                 for (let i = 0; i < todoList.length; i++) {
-                    if (todoList[i].deadline.split('-')[2] != currentDay) {
+                    const deadline = new Date(todoList[i].deadline);
+                    if (start > deadline || end < deadline) {
+                        console.log(todoList[i]);
                         tasksList.removeChild(todoList[i].domEl);
                     }
                 }
@@ -132,46 +201,18 @@ const renderToElement = (element, dist) => {
                 }
             }
         }
-    });
+    }
 
-    filterWeek.addEventListener('click', function() {
-        function getMonday(date) {
-            let day = date.getDay() || 7;
-            if (day !== 1)
-                date.setHours(-24 * (day - 1));
-            return date;
-        }
-
-        function getSunday(date) {
-            let day = date.getDay() || 1;
-            if (day !== 7)
-                date.setHours(24 * (day - 1));
-            return date;
-        }
-
-       if (todoList.length !== 0) {
-           let result = filterWeek.classList.toggle('filters--active');
-           if (result) {
-               for (let i = 0; i < todoList.length; i++) {
-                   console.log(getMonday(new Date()) >= new Date(todoList[i].deadline) && getSunday(new Date()) <= new Date(todoList[i].deadline));
-                   if (getMonday(new Date()) >= new Date(todoList[i].deadline) && getSunday(new Date()) <= new Date(todoList[i].deadline)) {
-                       tasksList.removeChild(todoList[i].domEl);
-                   }
-               }
-           } else {
-               for (let i = 0; i < todoList.length; i++) {
-                   tasksList.appendChild(todoList[i].domEl);
-               }
-           }
-       }
-    });
+    /*makeTodoItem({
+        name: '',
+        done: '',
+        dedline: '',
+    });*/
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
         if (formInput.value.length !== 0 && dataPicker.value.length !== 0) {
-
             let id = getId();
-
             let fragmentListOfTasks = document.createDocumentFragment();
 
             let taskItem = makeElement('li', {
@@ -236,9 +277,8 @@ const renderToElement = (element, dist) => {
 
             todoList.push(todoItem);
 
-            formInput.value = '';
+            // formInput.value = '';
         }
-
     });
 
     let getId = function () {
