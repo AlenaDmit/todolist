@@ -150,6 +150,15 @@ body {
     vertical-align: middle;
 }
 
+.checked {
+    color: dimgrey;
+    text-decoration: line-through;
+}
+
+.checked label {
+        text-decoration: line-through;
+}
+
 .tasks-list__item__deadline {
     margin: 0 10px 0 0;
 }

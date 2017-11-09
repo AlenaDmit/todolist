@@ -191,8 +191,9 @@ interface todoListItem {
                 for (let i = 0; i < todoList.length; i++) {
                     const deadline = new Date(todoList[i].deadline);
                     if (start > deadline || end < deadline) {
-                        console.log(todoList[i]);
-                        tasksList.removeChild(todoList[i].domEl);
+                        const childsArray = [...tasksList.childNodes];
+                        if (childsArray.indexOf(todoList[i].domEl) > -1)
+                            tasksList.removeChild(todoList[i].domEl);
                     }
                 }
             } else {
@@ -267,6 +268,21 @@ interface todoListItem {
                 let target = e.target.parentNode.parentNode;
                 tasksList.removeChild(target);
             });
+
+            const check = (DOMElement) => (e) => {
+            e.stopPropagation();
+            let target = e.target.parentNode;
+            target.classList.toggle('checked');
+            // if (DOMElement.checked === false) {
+            //
+            //     if (result) {
+            //         console.log('checked');
+            //     } else {
+            //         console.log('unchecked');
+            //     }
+            // }
+            };
+            taskName.addEventListener('click', check(taskCheckbox));
 
             const todoItem = {
                 name: formInput.value,
