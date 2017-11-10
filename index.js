@@ -5,7 +5,8 @@ const initialTodoList =  [
     {name: "erfrewrf", deadline: "2017-11-08", done: false},
     {name: "erfrewrf", deadline: "2017-11-08", done: false},
     {name: "33333333333333", deadline: "2017-11-02",  done: false},
-    {name: "hgdx", deadline: "2017-11-07", done: false},];
+    {name: "hgdx", deadline: "2017-11-07", done: false},
+];
 
 
 /*
@@ -45,7 +46,7 @@ interface todoListItem {
         return new Date(y, m + 1, 0);
     };
 
-    const makeElement = (type='div', attributes={}, content='', filter='') => {
+    const makeElement = (type='div', attributes={}, content='', done) => {
         let element = document.createElement(type);
         element.innerHTML = content;
             for (key in attributes) {
@@ -204,16 +205,11 @@ interface todoListItem {
         }
     }
 
-    /*makeTodoItem({
-        name: '',
-        done: '',
-        dedline: '',
-    });*/
-
-    form.addEventListener('submit', function (e) {
+    const createTask = (containerForTask, valueOfInput, valueOfDataPicker) => (e) => {
         e.preventDefault();
-        if (formInput.value.length !== 0 && dataPicker.value.length !== 0) {
+        if (valueOfInput.value.length !== 0 && valueOfDataPicker.value.length !== 0) {
             let id = getId();
+
             let fragmentListOfTasks = document.createDocumentFragment();
 
             let taskItem = makeElement('li', {
@@ -251,14 +247,14 @@ interface todoListItem {
             btnDeleteTask.appendChild(imgDeleteTask);
             taskItem.appendChild(btnDeleteTask);
             fragmentListOfTasks.appendChild(taskItem);
-            tasksList.appendChild(fragmentListOfTasks);
+            containerForTask.appendChild(fragmentListOfTasks);
 
-            imgDeleteTask.onmouseover = function(e) {
+            imgDeleteTask.onmouseover = function (e) {
                 e.stopPropagation();
                 imgDeleteTask.setAttribute('src', 'icons/delete-red.svg');
             };
 
-            imgDeleteTask.onmouseout = function(e) {
+            imgDeleteTask.onmouseout = function (e) {
                 e.stopPropagation();
                 imgDeleteTask.setAttribute('src', 'icons/delete-black.svg');
             };
@@ -269,20 +265,17 @@ interface todoListItem {
                 tasksList.removeChild(target);
             });
 
-            const check = (DOMElement) => (e) => {
-            e.stopPropagation();
-            let target = e.target.parentNode;
-            target.classList.toggle('checked');
-            // if (DOMElement.checked === false) {
-            //
-            //     if (result) {
-            //         console.log('checked');
-            //     } else {
-            //         console.log('unchecked');
-            //     }
-            // }
+            const check = (DOMElement, todoList) => (e) => {
+                e.stopPropagation();
+                let target = e.target.parentNode;
+                target.classList.toggle('checked');
+                for (let i = 0; i < todoList.length; i++) {
+                    if (todoList[i].domEl === target) {
+                        (DOMElement.checked === false) ? todoList[i].done = true : todoList[i].done = false;
+                    }
+                }
             };
-            taskName.addEventListener('click', check(taskCheckbox));
+            taskName.addEventListener('click', check(taskCheckbox, todoList));
 
             const todoItem = {
                 name: formInput.value,
@@ -292,10 +285,10 @@ interface todoListItem {
             };
 
             todoList.push(todoItem);
-
             // formInput.value = '';
         }
-    });
+    };
+    form.addEventListener('submit', createTask(tasksList, formInput, dataPicker));
 
     let getId = function () {
         return ++window.lastId;
