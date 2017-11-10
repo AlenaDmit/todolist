@@ -1,13 +1,9 @@
-const renderToElement = (element, dist) => {
-
-};
-const initialTodoList =  [
+const initialTodoList = [
     {name: "erfrewrf", deadline: "2017-11-08", done: false},
     {name: "erfrewrf", deadline: "2017-11-08", done: false},
     {name: "33333333333333", deadline: "2017-11-02",  done: false},
     {name: "hgdx", deadline: "2017-11-07", done: false},
 ];
-
 
 /*
 interface todoListItem {
@@ -17,7 +13,7 @@ interface todoListItem {
         domEl: ?DOMElement,
 }*/
 
-(function getToDoList() {
+const getToDoList = (dist) => {
     window.lastId = 0;
 
     const getMonday = (date) => {
@@ -46,7 +42,7 @@ interface todoListItem {
         return new Date(y, m + 1, 0);
     };
 
-    const makeElement = (type='div', attributes={}, content='', done) => {
+    const makeElement = (type='div', attributes={}, content='') => {
         let element = document.createElement(type);
         element.innerHTML = content;
             for (key in attributes) {
@@ -138,7 +134,8 @@ interface todoListItem {
     container.appendChild(filters);
     container.appendChild(tasksList);
     fragment.appendChild(container);
-    document.body.appendChild(fragment);
+    dist.appendChild(fragment);
+    document.body.appendChild(dist);
 
     imgAdd.onmouseover = function () {
         imgAdd.setAttribute('src','icons/add-green.svg');
@@ -285,12 +282,19 @@ interface todoListItem {
             };
 
             todoList.push(todoItem);
-            // formInput.value = '';
+            formInput.value = '';
         }
     };
     form.addEventListener('submit', createTask(tasksList, formInput, dataPicker));
 
     let getId = function () {
         return ++window.lastId;
-    }
-})();
+    };
+
+    return container;
+};
+
+window.onload = function () {
+    let block = document.querySelector('.block');
+    getToDoList(block);
+};
